@@ -1,0 +1,23 @@
+# depslib dependency file v1.0
+1665591322 source:c:\users\kuanyi\desktop\programing\c++\datastructure\hw1_c34104032\matrixterm.cpp
+	"MatrixTerm.h"
+
+1665591106 c:\users\kuanyi\desktop\programing\c++\datastructure\hw1_c34104032\matrixterm.h
+
+1665592787 source:c:\users\kuanyi\desktop\programing\c++\datastructure\hw1_c34104032\sparsematrix.cpp
+	<iostream>
+	<fstream>
+	<time.h>
+	"SparseMatrix.h"
+	"MatrixTerm.h"
+
+1665592550 c:\users\kuanyi\desktop\programing\c++\datastructure\hw1_c34104032\sparsematrix.h
+	"MatrixTerm.h"
+
+1665593403 source:c:\users\kuanyi\desktop\programing\c++\datastructure\hw1_c34104032\main.cpp
+	<iostream>
+	<fstream>
+	<time.h>
+	"SparseMatrix.h"
+	"MatrixTerm.h"
+
