@@ -3,7 +3,7 @@
 #include <string>
 #include <cstdlib>
 using namespace std;
-
+//Initialize the framework of maze problem solving
 #define mazeRow 17
 #define mazeCol 17
 
@@ -52,6 +52,7 @@ char maze[mazeRow][mazeCol];
 int mark[mazeRow][mazeCol] = {0};	
 
 void Path(const int, const int);
+void printStep(int count, int row, int col);
 
 int main(int argc, char** argv) {
 	//Initialize moving offsets
@@ -108,13 +109,22 @@ void Path(const int m, const int p){
 			//cout<< g<< " "<< h<<" "<< temp.dir << endl;
 
 
-			if(g==(m-2) && h==(p-1)){//reach exit
-				
-				//output path
-				//cout<<stack.;
-				cout<<i<<" "<<j<<endl; // last two squares on the path
-				cout<< m-2 << " " << p-1 << endl;
-				cout<<"successfully escaped!!";
+			if(g==(m-2) && h==(p-1)){//reach exit	
+				//print last two steps on the path 	
+				ofstream stepOut;
+				stepOut.open("output.txt", ios::app);
+
+				stepOut<<counter<< ":"<< i<<","<<j<<endl; 
+				cout<<counter<< ":"<< i<<","<<j<<endl; 
+				counter++;
+
+				stepOut<<counter<< ":"<< m-2<<","<<p-1<<endl;
+				cout<<counter<< ":"<< m-2<<","<<p-1<<endl;
+
+				stepOut<<"successfully escaped!!";	
+				cout<<"successfully escaped!!";			
+				stepOut.close();
+									
 				return;
 				
 			}
@@ -122,7 +132,10 @@ void Path(const int m, const int p){
 
 				mark[g][h] = 1;				
 				temp.x = i; temp.y = j; temp.dir = d+1;
-				cout<< temp.x<< " "<< temp.y<<" "<< temp.dir << endl;
+				
+				printStep(counter, temp.x, temp.y);
+				counter++;
+
 				stack.Push(temp); //stack it
 				i = g; j =h; d = E; //East; move to (g, h)
 				
@@ -135,12 +148,37 @@ void Path(const int m, const int p){
 			} 
 		} //End of finding dir
 	} //End of finding path
+	ofstream stepOut;
+	stepOut.open("output.txt", ios::app);
+	stepOut << "fail to escape."<< endl;
 	cout<<"Failed to escape."<<endl;
+	stepOut.close();
 	
 }//End of Path Func
 
 //Definition of Stack class
 //Const.
+
+void printStep(int count, int row, int col){
+	ofstream stepOut;
+	if(count == 0){//While writing the first one, clear up the file first!
+		stepOut.open("output.txt", ios::out);
+		stepOut << count << ":" << row << "," << col << endl;
+		cout << count << ":" << row << "," << col << endl;
+
+		stepOut.close();
+	}
+	else{ //step by step, print the steps to the end of file
+		stepOut.open("output.txt", ios::app);
+		stepOut << count << ":" << row << "," << col << endl;
+		cout << count << ":" << row << "," << col << endl;
+
+		stepOut.close();
+	}
+
+
+}
+
 Stack::Stack(int StackCapacity)
 {
 	stackCapacity = StackCapacity;
