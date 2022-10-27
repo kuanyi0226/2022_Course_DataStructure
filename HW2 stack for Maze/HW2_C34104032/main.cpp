@@ -70,8 +70,8 @@ int main(int argc, char** argv) {
 	char c = ' ';
 	//Read the maze into 2D Array and print it on Console Window
 	if(!input.fail()){
-		for(int i = 0; i < 17; i++){
-			for(int j = 0; j<18; j++){ //every end of row is '\n'
+		for(int i = 0; i < mazeRow; i++){
+			for(int j = 0; j<mazeCol+1; j++){ //every end of row is '\n'
 				input.get(c);
 				if(c != '\n'){
 					maze[i][j] = c;
@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
 	}	
 	input.close();
 	
-	Path(mazeRow, mazeCol);
+	Path(mazeRow, mazeCol);//m=17 p=17
 
 	return 0;
 }
@@ -93,11 +93,6 @@ void Path(const int m, const int p){
 	//Initialize: start at (1,0)
 	int counter = 0; //走了幾步
 	mark[1][0] = 1;
-	for(int i = 0; i<17; i++){
-		for(int j=0;j<17;j++)
-			cout<< mark[i][j];
-		cout<<endl;
-	}
 	Stack stack(m*p); //capacity of stack
 	Items temp(1,0,E); //set temp.x, temp.y, temp.dir
 	stack.Push(temp);
@@ -113,21 +108,21 @@ void Path(const int m, const int p){
 			//cout<< g<< " "<< h<<" "<< temp.dir << endl;
 
 
-			if(g==m && h==p){//reach exit
+			if(g==(m-2) && h==(p-1)){//reach exit
 				
 				//output path
 				//cout<<stack.;
 				cout<<i<<" "<<j<<endl; // last two squares on the path
-				cout<< m << " " << p << endl;
+				cout<< m-2 << " " << p-1 << endl;
 				cout<<"successfully escaped!!";
 				return;
 				
 			}
-			if(!(maze[g][h]) && !(mark[g][h])){ //new position
+			if(maze[g][h]=='0' && mark[g][h] == 0){ //new position
 
 				mark[g][h] = 1;				
 				temp.x = i; temp.y = j; temp.dir = d+1;
-				//cout<< temp.x<< " "<< temp.y<<" "<< temp.dir << endl;
+				cout<< temp.x<< " "<< temp.y<<" "<< temp.dir << endl;
 				stack.Push(temp); //stack it
 				i = g; j =h; d = E; //East; move to (g, h)
 				
