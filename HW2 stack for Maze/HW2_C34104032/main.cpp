@@ -103,6 +103,10 @@ void Path(const int m, const int p){
 		temp = stack.Top();
 		stack.Pop();//unstack
 		int i = temp.x; int j = temp.y; int d = temp.dir;
+		if(counter != 0){
+			printStep(counter, temp.x, temp.y);
+			counter++;
+		}
 		
 		while(d<9){//move forward
 			int g = i + moveDir[d].a; int h = j + moveDir[d].b;
