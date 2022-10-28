@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <string>
-#include <cstdlib>
+
 using namespace std;
 //Initialize the framework of maze problem solving
 #define mazeRow 17
@@ -130,8 +129,12 @@ void Path(const int m, const int p){
 			if(maze[g][h]=='0' && mark[g][h] == 0){ //new position
 
 				mark[g][h] = 1;				
-				temp.x = i; temp.y = j; temp.dir = d+1;
-				
+				temp.x = i; temp.y = j; temp.dir = d+1; 
+				//d or temp.dir can only be 1~8
+				if(temp.dir == 9){
+					temp.dir = 1;
+				}
+								
 				printStep(counter, temp.x, temp.y);
 				counter++;
 
