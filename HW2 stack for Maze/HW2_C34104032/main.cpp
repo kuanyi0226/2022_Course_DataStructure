@@ -1,7 +1,8 @@
 #include <iostream>
+#include <stdlib.h>
 #include <fstream>
-
 using namespace std;
+
 //Initialize the framework of maze problem solving
 #define mazeRow 17
 #define mazeCol 17
@@ -18,7 +19,6 @@ struct Items{ //list of triple to record the pass history
 	int x, y, dir;
 	//Constructor
 	Items(){
-
 	}
 	Items(int i, int j, directions Dir){
 		x = i; y = j; dir = Dir;
@@ -86,12 +86,13 @@ int main(int argc, char** argv) {
 	
 	Path(mazeRow, mazeCol);//m=17 p=17
 
+	system("pause");
 	return 0;
 }
 
 void Path(const int m, const int p){
 	//Initialize: start at (1,0)
-	int counter = 0; //走了幾步
+	int counter = 0; //total steps
 	mark[1][0] = 1;
 	Stack stack(m*p); //capacity of stack
 	Items temp(1,0,E); //set temp.x, temp.y, temp.dir
@@ -104,8 +105,6 @@ void Path(const int m, const int p){
 		
 		while(d<9){//move forward
 			int g = i + moveDir[d].a; int h = j + moveDir[d].b;
-			//cout<< g<< " "<< h<<" "<< temp.dir << endl;
-
 
 			if(g==(m-2) && h==(p-1)){//reach exit	
 				//print last two steps on the path 	
@@ -119,8 +118,8 @@ void Path(const int m, const int p){
 				stepOut<<counter<< ":"<< m-2<<","<<p-1<<endl;
 				cout<<counter<< ":"<< m-2<<","<<p-1<<endl;
 
-				stepOut<<"successfully escaped!!";	
-				cout<<"successfully escaped!!";			
+				stepOut<<"successfully escaped!!"<<endl;	
+				cout<<"successfully escaped!!"<<endl;			
 				stepOut.close();
 									
 				return;
@@ -147,7 +146,7 @@ void Path(const int m, const int p){
 			else {
 				d++; //try next dir
 				
-				if(d==9){//紀錄碰壁當下的位置，印出
+				if(d==9){//record and print the position having no way to go
 					printStep(counter, i, j);
 					counter++;
 				}
@@ -162,9 +161,6 @@ void Path(const int m, const int p){
 	stepOut.close();
 	
 }//End of Path Func
-
-//Definition of Stack class
-//Const.
 
 void printStep(int count, int row, int col){
 	ofstream stepOut;
@@ -186,6 +182,8 @@ void printStep(int count, int row, int col){
 
 }
 
+//Further Definition of Stack class
+//Const.
 Stack::Stack(int StackCapacity)
 {
 	stackCapacity = StackCapacity;
