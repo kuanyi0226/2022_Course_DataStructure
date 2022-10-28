@@ -98,15 +98,10 @@ void Path(const int m, const int p){
 	Items temp(1,0,E); //set temp.x, temp.y, temp.dir
 	stack.Push(temp);
 	
-	
 	while(!stack.IsEmpty()){
 		temp = stack.Top();
 		stack.Pop();//unstack
-		int i = temp.x; int j = temp.y; int d = temp.dir;
-		if(counter != 0){
-			printStep(counter, temp.x, temp.y);
-			counter++;
-		}
+		int i = temp.x; int j = temp.y; int d = temp.dir;	
 		
 		while(d<9){//move forward
 			int g = i + moveDir[d].a; int h = j + moveDir[d].b;
@@ -147,8 +142,13 @@ void Path(const int m, const int p){
 			}
 			
 			else {
-				//cout<< "d++"<<endl;
 				d++; //try next dir
+				
+				if(d==9){//紀錄碰壁當下的位置，印出
+					printStep(counter, i, j);
+					counter++;
+				}
+
 			} 
 		} //End of finding dir
 	} //End of finding path
