@@ -46,12 +46,12 @@ Number 16 is not exist.
 
 Search:
 Bingo! 10 is found.
-Bingo! 4 is found.
+Sorry! 4 is not found.
 Bingo! 24 is found.
 Bingo! 18 is found.
 Bingo! 37 is found.
 Sorry! 5 is not found.
-Bingo! 2 is found.
+Sorry! 2 is not found.
 Bingo! 3 is found.
 Bingo! 1 is found.
 Sorry! 14 is not found.
@@ -64,10 +64,10 @@ Bingo! 9 is found.
 (E)xit
 
 Print:
-The tree in prefix order: 10 4 2 1 3 8 6 9 24 18 37 
-The tree in infix order: 1 2 3 4 6 8 9 10 18 24 37 
-The tree in post order: 1 3 2 6 9 8 4 18 37 24 10 
-The tree in level order: 10 4 24 2 8 18 37 1 3 6 9 
+The tree in prefix order: 10 6 3 1 9 24 18 37 
+The tree in infix order: 1 3 6 9 10 18 24 37 
+The tree in post order: 1 3 9 6 18 37 24 10 
+The tree in level order: 10 6 24 3 9 18 37 1 
 
 (I)nsert a number.
 (D)elete a number.

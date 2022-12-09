@@ -10,7 +10,6 @@ void printBoth(string); // print on console & into file
 void printBothLine(string); //plus \n
 void printNumBoth(int); // print on console & into file
 void printNumBothLine(int); //plus \n
-
 void printQuestions();
 
 //about BST
@@ -25,7 +24,7 @@ class BST{//Implement Binary Tree & its operations
 		node* root = NULL; //pointer預設不是NULL
 
 		void insert(node*);
-		void delete_node(int);
+		node* delete_node(node*, int);
 		node* search(int);
 		void printpreorder(); void printpreorder(node*);
 		void printinorder(); void printinorder(node*);
@@ -41,6 +40,18 @@ node* createNode(int Data){
 	return newNode;
 }
 
+int findSuccessor(node* root){
+	root = root->rightChild;
+	while(root->leftChild != NULL) root = root->leftChild;
+	return root->data;
+}
+
+int findPredecessor(node* root){
+	root = root->leftChild;
+	while(root->rightChild != NULL) root = root->rightChild;
+	return root->data;
+}
+
 //Queue for printing level order
 class Queue{
 	private:
@@ -49,14 +60,14 @@ class Queue{
 
 	public:
 	Queue();
-	inline bool isEmplty(); //dont need isFull()
+	inline bool isEmpty(); //dont need isFull()
 	void Add(node*);
 	node* Delete();
 };
 
 //main Function
 int main(int argc, char** argv){
-	//initialize
+	//prepare
 	ifstream input; ofstream output;
 	char operation;
 	BST bst;
@@ -114,7 +125,18 @@ int main(int argc, char** argv){
 				case 'd':
 					printBothLine("Delete:");
 					for(int i = 0; i < numbers.size()-1; i++){ //not include -1
-					bst.delete_node(numbers[i]);
+						//searchfirst
+						tempNode = bst.search(numbers[i]);
+						if(tempNode == NULL){
+							printBoth("Number "); printNumBoth(numbers[i]); printBothLine(" is not exist.");
+							continue;
+						}	
+						tempNode = bst.delete_node(bst.root, numbers[i]);
+						if(tempNode != NULL){
+							printBoth("Number "); printNumBoth(numbers[i]); printBothLine(" is deleted.");
+						}else{
+							printBoth("Number "); printNumBoth(numbers[i]); printBothLine(" is not exist.");
+						}			
 					}
 					printBothLine("");
 					break;
@@ -122,7 +144,12 @@ int main(int argc, char** argv){
 				case 's':
 					printBothLine("Search:");
 					for(int i = 0; i < numbers.size()-1; i++){ //not include -1
-					bst.search(numbers[i]);
+					tempNode = bst.search(numbers[i]);
+					if(tempNode != NULL){
+						printBoth("Bingo! "); printNumBoth(numbers[i]); printBothLine(" is found.");
+					}else{
+						printBoth("Sorry! "); printNumBoth(numbers[i]); printBothLine(" is not found.");
+					}
 					}
 					printBothLine("");
 					break;
@@ -217,75 +244,31 @@ void BST::insert(node* newNode){
 	printBoth("Number "); printNumBoth(newNode->data); printBothLine(" is inserted.");
 
 }
-
-void BST::delete_node(int target){
+//Delete
+node* BST::delete_node(node* root, int target){
 	//tree has nothing
-	node* targetNode = NULL;
 	if(root == NULL){
-		printBoth("Number "); printNumBoth(target); printBothLine(" is not exist.");
-		return;
-	}
-	//search
-	node* p = root, *pp = NULL, *parent;
-	while(p != NULL){
-		parent = pp;
-		pp = p;
-		if(target < p->data) p = p->leftChild;
-		else if (target > p->data) p = p->rightChild;
-		else{ //found
-			targetNode = p;
-			break;
-		}
-		
+		return NULL;
 	}
 
-	//TargetNode not exist
-	if(targetNode == NULL){
-		printBoth("Number "); printNumBoth(target); printBothLine(" is not exist.");
-		return;
-	}
-	//TargetNode exist
-	//case1: leaf
-	if(targetNode->leftChild == NULL && targetNode->rightChild == NULL)	{
-		if(targetNode == parent->leftChild)
-			parent->leftChild = NULL;
-		else if(targetNode == parent->rightChild)
-			parent->rightChild = NULL;
-		printBoth("Number "); printNumBoth(target); printBothLine(" is deleted.");
-		return;
-	}
-	//case2: has only one child
-	if(targetNode->leftChild == NULL || targetNode->rightChild == NULL)	{
-		if(targetNode == parent->leftChild){
-			if(targetNode->rightChild == NULL){
-				parent->leftChild = targetNode->leftChild;
-			}else{
-				parent->leftChild = targetNode->rightChild;
-			}
+	if (target > root -> data) root -> rightChild = delete_node(root -> rightChild, target);
+	else if (target < root -> data) root->leftChild = delete_node(root -> leftChild, target);
+	else {
+		if (root -> leftChild == NULL && root -> rightChild == NULL) root = NULL;
+		else if (root -> rightChild != NULL) {
+			root -> data = findSuccessor(root);
+			root->rightChild = delete_node(root -> rightChild, root -> data);
+		} else {
+			root -> data = findPredecessor(root);
+			root -> leftChild = delete_node(root -> leftChild, root -> data);
 		}
-		else if(targetNode == parent->rightChild){
-			if(targetNode->rightChild == NULL){
-				parent->rightChild = targetNode->leftChild;
-			}else{
-				parent->rightChild = targetNode->rightChild;
-			}
-		}
-		printBoth("Number "); printNumBoth(target); printBothLine(" is deleted.");
-		return;
 	}
-	//case3: has both 2 children
-	if(targetNode->leftChild != NULL && targetNode->rightChild != NULL)	{
-		
-		printBoth("Number "); printNumBoth(target); printBothLine(" is deleted.");
-		return;
-	}
-
+    return root;
 }
 
 //Search
 node* BST::search(int target){
 	if(root == NULL){
-		printBoth("Sorry! "); printNumBoth(target); printBothLine(" is not found.");
 		return NULL;
 	}
 
@@ -295,13 +278,11 @@ node* BST::search(int target){
 		if(target < p->data) p = p->leftChild;
 		else if (target > p->data) p = p->rightChild;
 		else{ //found
-			printBoth("Bingo! "); printNumBoth(target); printBothLine(" is found.");
 			return p;
 		}
 		
 	}
 	//not found
-	printBoth("Sorry! "); printNumBoth(target); printBothLine(" is not found.");
 	return NULL;
 }
 
@@ -360,7 +341,7 @@ void BST::printlevelorder(){
 Queue::Queue(){
 	front = rear = -1;
 }
-inline bool Queue::isEmplty(){
+inline bool Queue::isEmpty(){
 	return (front == rear) ? 1 : 0;
 }
 void Queue::Add(node* x){
@@ -368,7 +349,7 @@ void Queue::Add(node* x){
 	queue.push_back(x);
 }
 node* Queue::Delete(){
-	if(isEmplty())
+	if(isEmpty())
 		return 0;
 	else{
 		node* x = queue[++front];
