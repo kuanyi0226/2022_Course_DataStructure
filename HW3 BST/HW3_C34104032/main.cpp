@@ -26,7 +26,7 @@ class BST{//Implement Binary Tree & its operations
 
 		void insert(node*);
 		void delete_node(int);
-		void search(int);
+		node* search(int);
 		void printpreorder(); void printpreorder(node*);
 		void printinorder(); void printinorder(node*);
 		void printpostorder(); void printpostorder(node*);
@@ -41,6 +41,20 @@ node* createNode(int Data){
 	return newNode;
 }
 
+//Queue for printing level order
+class Queue{
+	private:
+	int front, rear;
+	vector<node*> queue; //unlimited size;
+
+	public:
+	Queue();
+	inline bool isEmplty(); //dont need isFull()
+	void Add(node*);
+	node* Delete();
+};
+
+//main Function
 int main(int argc, char** argv){
 	//initialize
 	ifstream input; ofstream output;
@@ -99,6 +113,10 @@ int main(int argc, char** argv){
 				case 'D':
 				case 'd':
 					printBothLine("Delete:");
+					for(int i = 0; i < numbers.size()-1; i++){ //not include -1
+					bst.delete_node(numbers[i]);
+					}
+					printBothLine("");
 					break;
 				case 'S':
 				case 's':
@@ -126,6 +144,7 @@ int main(int argc, char** argv){
 
 	return 0;
 }
+//print-functions
 void printBoth(string s){
 	cout<< s;
 
@@ -171,7 +190,7 @@ void printQuestions(){
 	printBothLine("");
 }
 
-
+//Insert
 void BST::insert(node* newNode){
 	if(root == NULL){
 		root = newNode;
@@ -199,10 +218,75 @@ void BST::insert(node* newNode){
 
 }
 
-void BST::search(int target){
+void BST::delete_node(int target){
+	//tree has nothing
+	node* targetNode = NULL;
+	if(root == NULL){
+		printBoth("Number "); printNumBoth(target); printBothLine(" is not exist.");
+		return;
+	}
+	//search
+	node* p = root, *pp = NULL, *parent;
+	while(p != NULL){
+		parent = pp;
+		pp = p;
+		if(target < p->data) p = p->leftChild;
+		else if (target > p->data) p = p->rightChild;
+		else{ //found
+			targetNode = p;
+			break;
+		}
+		
+	}
+
+	//TargetNode not exist
+	if(targetNode == NULL){
+		printBoth("Number "); printNumBoth(target); printBothLine(" is not exist.");
+		return;
+	}
+	//TargetNode exist
+	//case1: leaf
+	if(targetNode->leftChild == NULL && targetNode->rightChild == NULL)	{
+		if(targetNode == parent->leftChild)
+			parent->leftChild = NULL;
+		else if(targetNode == parent->rightChild)
+			parent->rightChild = NULL;
+		printBoth("Number "); printNumBoth(target); printBothLine(" is deleted.");
+		return;
+	}
+	//case2: has only one child
+	if(targetNode->leftChild == NULL || targetNode->rightChild == NULL)	{
+		if(targetNode == parent->leftChild){
+			if(targetNode->rightChild == NULL){
+				parent->leftChild = targetNode->leftChild;
+			}else{
+				parent->leftChild = targetNode->rightChild;
+			}
+		}
+		else if(targetNode == parent->rightChild){
+			if(targetNode->rightChild == NULL){
+				parent->rightChild = targetNode->leftChild;
+			}else{
+				parent->rightChild = targetNode->rightChild;
+			}
+		}
+		printBoth("Number "); printNumBoth(target); printBothLine(" is deleted.");
+		return;
+	}
+	//case3: has both 2 children
+	if(targetNode->leftChild != NULL && targetNode->rightChild != NULL)	{
+		
+		printBoth("Number "); printNumBoth(target); printBothLine(" is deleted.");
+		return;
+	}
+
+}
+
+//Search
+node* BST::search(int target){
 	if(root == NULL){
 		printBoth("Sorry! "); printNumBoth(target); printBothLine(" is not found.");
-		return;
+		return NULL;
 	}
 
 	node* p = root, *pp = NULL;
@@ -212,12 +296,13 @@ void BST::search(int target){
 		else if (target > p->data) p = p->rightChild;
 		else{ //found
 			printBoth("Bingo! "); printNumBoth(target); printBothLine(" is found.");
-			return;
+			return p;
 		}
 		
 	}
 	//not found
 	printBoth("Sorry! "); printNumBoth(target); printBothLine(" is not found.");
+	return NULL;
 }
 
 //Preorder
@@ -257,6 +342,38 @@ void BST::printpostorder(node* currentNode){ //workhorse
 	}
 };
 
-void BST::printlevelorder(){};
+void BST::printlevelorder(){
+	printBoth("The tree in level order: ");
+	Queue q;
+	node* currentNode = root;
+
+	while(currentNode){
+		printNumBoth(currentNode->data);printBoth(" ");
+		if(currentNode->leftChild != NULL) q.Add(currentNode->leftChild);
+		if(currentNode->rightChild != NULL) q.Add(currentNode->rightChild);
+		currentNode = q.Delete();
+	}
+};
+
+
+//implement queue's methods
+Queue::Queue(){
+	front = rear = -1;
+}
+inline bool Queue::isEmplty(){
+	return (front == rear) ? 1 : 0;
+}
+void Queue::Add(node* x){
+	rear++;
+	queue.push_back(x);
+}
+node* Queue::Delete(){
+	if(isEmplty())
+		return 0;
+	else{
+		node* x = queue[++front];
+		return x;
+	}
+}
 
 
